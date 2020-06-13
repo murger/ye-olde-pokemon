@@ -1,0 +1,27 @@
+{
+  "name": "true-pokemon",
+  "version": "1.0.0",
+  "description": "TL coding challenge",
+  "private": true,
+  "main": "dist/index.html",
+  "scripts": {
+    "test": "jest --silent --verbose",
+    "clean": "rm -rf dist",
+    "start": "yarn clean && yarn parcel pub/index.html"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "parcel": "^1.12.4"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.15",
+    "react": "16.x",
+    "react-dom": "16.x",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "styled-components": "^4.3.2"
+  }
+}
