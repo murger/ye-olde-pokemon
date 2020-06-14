@@ -1,12 +1,15 @@
-import data from '../..data/pokemon.json'
+import { getAllPokemons } from '../resources/pokemon'
 
-export const findPokemonByName = async (req, res) => {
-  const { name } = req.params
-  const item = data.find(pokemon => pokemon.name === name)
+export const findPokemonsByName = async (req, res) => {
+  const { query } = req.body
+  const data = await getAllPokemons()
+  const set = data.filter(({ name }) => name.startsWith(query.toLowerCase()))
 
-  if (!item) {
+  console.log(`findPokemonsByName: ${query} (${set.length})`)
+
+  if (!set.length) {
     return res.status(404).end()
   }
 
-  return res.json(item)
+  return res.json(set)
 }

@@ -1,19 +1,17 @@
 {
-  "name": "hyper-api",
+  "name": "ye-olde-pokemon-api",
   "version": "1.0.0",
-  "description": "HyperCloud API",
   "private": true,
-  "main": "index.js",
   "scripts": {
-    "start": "nodemon -r esm index.js",
-    "debug": "nodemon --inspect ."
+    "start": "nodemon -r esm ./src/index.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.4",
     "esm": "^3.2.25",
     "express": "~4.16.0",
-    "nodemon": "^1.18.4"
+    "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.4"
   },
   "devDependencies": {}
 }

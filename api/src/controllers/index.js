@@ -1,8 +1,8 @@
 import express from 'express'
-import { findPokemonByName } from './pokemon'
+import { findPokemonsByName } from './pokemon'
 
 const Router = express.Router()
 
-Router.post('/pokemon/:name/', findPokemonByName)
+Router.post('/pokemon', findPokemonsByName)
 
 export default Router
