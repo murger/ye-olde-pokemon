@@ -131,7 +131,7 @@ const Search = ({
         : <Feedback>{error || message}</Feedback>
       }
       <Favourites
-        input={() => input}
+        input={input.current}
         search={search}
         reset={reset}
       />

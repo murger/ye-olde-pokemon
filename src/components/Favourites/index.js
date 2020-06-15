@@ -24,11 +24,9 @@ const Item = styled.li`
 const Favourites = ({ input, search, reset }) => {
   const [favourites, setFavourites] = useState(storage.all())
   const onClick = useCallback(name => {
-    const element = input().current
-
-    element.value = name
-    element.focus()
-    element.setSelectionRange(0, -1)
+    input.value = name
+    input.focus()
+    input.setSelectionRange(0, -1)
     reset()
     search(name)
   })
