@@ -3,8 +3,8 @@ Requires [node](http://nodejs.org) and [yarn](https://yarnpkg.com) to work.
 
 ```sh
 git clone https://github.com/murger/ye-olde-pokemon.git
-cd rcc-converter
-yarn && yarn start
+cd ye-olde-pokemon
+yarn setup && yarn start
 ```
 
 ### Known issues

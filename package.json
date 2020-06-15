@@ -5,7 +5,7 @@
   "scripts": {
     "setup": "yarn && cd api && yarn",
     "start": "concurrently --raw yarn:start:*",
-    "start:ui": "rimraf dist && yarn parcel ./index.html",
+    "start:ui": "rimraf dist && yarn parcel ./index.html --open",
     "start:api": "cd api && yarn start",
     "test": "jest --silent --verbose"
   },
