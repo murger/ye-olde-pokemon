@@ -13,6 +13,7 @@ const tones = {
 
 export const theme = {
   colors: {
+    grey: '#a0a0a0',
     blue: '#365fac',
     yellow: '#ffcc02',
     black: '#1a1c1f'

@@ -1,14 +1,17 @@
 import React, {
+  useRef,
   useState,
   useCallback,
-  useRef,
+  useEffect,
   useLayoutEffect
 } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { debounce } from 'lodash-es'
 import request from '../../utils/request'
-import { setData, setResult, setError } from './actions'
+import { setData, setResult, setError, setLoading } from './actions'
+import Result from '../Result'
+import Favourites from '../Favourites'
 import logo from '../../assets/logo.png'
 
 const Container = styled.div`
@@ -55,24 +58,13 @@ const Feedback = styled.p`
   line-height: 1em;
 `
 
-const Result = styled.p`
-  width: 100%;
-  margin: 0;
-  padding: 1rem;
-  color: ${({ theme }) => theme.tone('high', false)};
-  border: 0.125rem solid ${({ theme }) => theme.tone('low', false)};
-  background-color: ${({ theme }) => theme.tone('high')};
-  font-size: 1.25rem;
-  text-align: center;
-  border-radius: 0.5rem;
-`
-
 const Search = ({
   result,
   data,
   error,
+  isLoading,
   getSuggestions,
-  getItem,
+  search,
   reset
 }) => {
   const input = useRef()
@@ -96,10 +88,14 @@ const Search = ({
     setMessage(null)
 
     if (e.key === 'Enter') {
-      getItem(value)
       element.setSelectionRange(0, -1)
+      search(value)
     }
   })
+
+  useEffect(() => {
+    setMessage(isLoading ? 'Loading...' : null)
+  }, [isLoading])
 
   useLayoutEffect(() => {
     if (!data.length) {
@@ -131,11 +127,14 @@ const Search = ({
         }}
       />
       {result
-        ? <Result>
-            {result.description}
-          </Result>
+        ? <Result data={result} />
         : <Feedback>{error || message}</Feedback>
       }
+      <Favourites
+        input={() => input}
+        search={search}
+        reset={reset}
+      />
     </Container>
   )
 }
@@ -143,7 +142,8 @@ const Search = ({
 const mapStateToProps = ({ search }) => ({
   result: search.result,
   data: search.data,
-  error: search.error
+  error: search.error,
+  isLoading: search.isLoading
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -155,7 +155,9 @@ const mapDispatchToProps = (dispatch) => ({
       dispatch(setError(error.message))
     }
   },
-  getItem: async (name) => {
+  search: async (name) => {
+    await dispatch(setLoading(true))
+
     try {
       const result = await request(['pokemon', name], 'GET')
       dispatch(setResult(result))

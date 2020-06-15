@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently --raw npm:start:*",
-    "start:ui": "rimraf dist && npx parcel ./index.html",
-    "start:api": "cd api && npm run start",
+    "setup": "yarn && cd api && yarn",
+    "start": "concurrently --raw yarn:start:*",
+    "start:ui": "rimraf dist && yarn parcel ./index.html",
+    "start:api": "cd api && yarn start",
     "test": "jest --silent --verbose"
   },
   "devDependencies": {
