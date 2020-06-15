@@ -1,5 +1,7 @@
+import { API_HOST } from '../constants'
+
 const request = async (uri, method = 'GET', body) => {
-  const url = uri.join('/')
+  const url = [API_HOST, ...uri].join('/')
   const resource = await fetch(url, {
     method,
     body: body ? JSON.stringify(body) : null,

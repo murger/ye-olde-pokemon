@@ -13,8 +13,9 @@ const tones = {
 
 export const theme = {
   colors: {
-    accent: '#3366cc',
-    background: '#1a1c1f'
+    blue: '#365fac',
+    yellow: '#ffcc02',
+    black: '#1a1c1f'
   },
   tone: (level, mode = true) =>
     `rgba(${mode ? '255, 255, 255' : '0, 0, 0'}, ${tones[level]})`
@@ -26,7 +27,7 @@ export const GlobalStyles = createGlobalStyle`
     margin: auto;
     overflow: hidden;
     user-select: none;
-    background-color: ${theme.colors.background};
+    background-color: ${theme.colors.black};
   }
 
   body {

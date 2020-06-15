@@ -11,7 +11,7 @@ const request = async (uri, method = 'GET', body) => {
     return cache[url]
   }
 
-  console.log(`fetchResource: ${url}`)
+  console.log(`request: ${url}`)
 
   const resource = await fetch(url, {
     method,

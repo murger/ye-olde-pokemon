@@ -1,9 +1,14 @@
-import React, { useCallback } from 'react'
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useLayoutEffect
+} from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { debounce } from 'lodash-es'
 import request from '../../utils/request'
-import { setData, setError, setLoading } from './actions'
+import { setData, setResult, setError } from './actions'
 import logo from '../../assets/logo.png'
 
 const Container = styled.div`
@@ -35,57 +40,132 @@ const Input = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.tone('base', false)};
   }
+
+  &::selection {
+    color: ${({ theme }) => theme.colors.yellow};
+    background-color: ${({ theme }) => theme.colors.blue};
+  }
+`
+
+const Feedback = styled.p`
+  min-height: 1rem;
+  padding-top: 0.5rem;
+  color: ${({ theme }) => theme.tone('mid')};
+  font-size: 1rem;
+  line-height: 1em;
+`
+
+const Result = styled.p`
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  color: ${({ theme }) => theme.tone('high', false)};
+  border: 0.125rem solid ${({ theme }) => theme.tone('low', false)};
+  background-color: ${({ theme }) => theme.tone('high')};
+  font-size: 1.25rem;
+  text-align: center;
+  border-radius: 0.5rem;
 `
 
 const Search = ({
+  result,
   data,
   error,
-  isLoading,
-  findItem
+  getSuggestions,
+  getItem,
+  reset
 }) => {
-  const handleChange = useCallback(debounce(
-    e => findItem(e.target.value),
-    0.5 * 1000
-  ))
+  const input = useRef()
+  const [message, setMessage] = useState(null)
+  const onChange = useCallback(debounce(e => {
+    const { value } = e.target
 
-  // TODO: autocomplete callback
-  // TODO: suggestions rows
-  // TODO: enter + error states
-  // TODO: result card
+    reset()
+
+    if (value) {
+      getSuggestions(value)
+    } else {
+      setMessage(null)
+    }
+  }, 0.5 * 1000))
+
+  const onKeyDown = useCallback(e => {
+    const { value } = e.target
+    const element = input.current
+
+    setMessage(null)
+
+    if (e.key === 'Enter') {
+      getItem(value)
+      element.setSelectionRange(0, -1)
+    }
+  })
+
+  useLayoutEffect(() => {
+    if (!data.length) {
+      return
+    }
+
+    const element = input.current
+    const bestOption = data.shift().name
+    const inputLength = element.value.length
+
+    element.value = bestOption
+    element.setSelectionRange(inputLength, bestOption.length)
+    setMessage('Press enter to fetch this pokemon')
+  }, [data])
 
   return (
     <Container>
       <Image src={logo} />
       <Input
+        ref={input}
         type="text"
+        spellCheck="false"
         placeholder="Abra, Mankey, Shellder..."
         autoFocus
-        // disabled={isLoading}
+        onKeyDown={onKeyDown}
         onChange={e => {
           e.persist()
-          handleChange(e)
+          onChange(e)
         }}
       />
+      {result
+        ? <Result>
+            {result.description}
+          </Result>
+        : <Feedback>{error || message}</Feedback>
+      }
     </Container>
   )
 }
 
 const mapStateToProps = ({ search }) => ({
+  result: search.result,
   data: search.data,
-  error: search.error,
-  isLoading: search.isLoading
+  error: search.error
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  findItem: async (query) => {
-    await dispatch(setLoading(true))
-
+  getSuggestions: async (query) => {
     try {
       const data = await request(['pokemon'], 'POST', { query })
       dispatch(setData(data))
     } catch (error) {
-      dispatch(setError(true))
+      dispatch(setError(error.message))
     }
+  },
+  getItem: async (name) => {
+    try {
+      const result = await request(['pokemon', name], 'GET')
+      dispatch(setResult(result))
+    } catch (error) {
+      dispatch(setError(error.message))
+    }
+  },
+  reset: () => {
+    dispatch(setError(null))
+    dispatch(setResult(null))
   }
 })
 
